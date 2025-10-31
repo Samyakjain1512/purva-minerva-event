@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin – Minerva Events</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+        .card { background: #fff; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .form-grid { display: grid; gap: 1rem; grid-template-columns: 1fr 1fr; }
+        .form-grid input, .form-grid select { grid-column: span 2; }
+        .form-grid input[type="date"], .form-grid input[type="text"] { grid-column: span 1; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f8f9fa; font-weight: 600; }
+        .btn { background: var(--primary); color: white; padding: 0.7rem 1.2rem; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .btn:hover { background: #0056b3; }
+        .success { color: #28a745; background: #d4edda; padding: 0.5rem; border-radius: 6px; margin-top: 1rem; }
+        .error { color: #dc3545; background: #f8d7da; padding: 0.5rem; border-radius: 6px; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+
+<div class="main-bg"></div>
+
+<header>
+    <div class="container">
+        <h1>Admin Panel</h1>
+        <nav>
+            <ul>
+                <li><a href="events.html">Back to Events</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="admin-container">
+
+        <!-- Add Event Form -->
+        <div class="card">
+            <h2>Add New Event</h2>
+            <form id="add-event-form">
+                <div class="form-grid">
+                    <input type="text" placeholder="Event Title" id="title" required>
+                    <input type="text" placeholder="Location" id="location" required>
+                    <input type="date" id="date" required>
+                    <input type="text" placeholder="Description" id="description" required>
+                </div>
+                <button type="submit" class="btn">Add Event</button>
+                <div id="add-msg"></div>
+            </form>
+        </div>
+
+        <!-- Registered Students -->
+        <div class="card">
+            <h2>Registered Students</h2>
+            <div id="registrations-table"></div>
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <p>© 2025 Minerva Forums – Admin Access</p>
+    </div>
+</footer>
+
+<script>
+    // Simple password check (change this!)
+    const ADMIN_PASS = "minerva2025";
+
+    if (prompt("Enter admin password:") !== ADMIN_PASS) {
+        alert("Access denied");
+        window.location.href = "events.html";
+    }
+
+    // Add Event
+    document.getElementById('add-event-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('add-msg');
+        msg.textContent = '';
+        msg.className = '';
+
+        const payload = {
+            title: document.getElementById('title').value.trim(),
+            description: document.getElementById('description').value.trim(),
+            date: document.getElementById('date').value,
+            location: document.getElementById('location').value.trim()
+        };
+
+        try {
+            const res = await fetch('backend/add_event.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                msg.textContent = 'Event added!';
+                msg.className = 'success';
+                e.target.reset();
+                loadRegistrations();
+            } else {
+                msg.textContent = data.error;
+                msg.className = 'error';
+            }
+        } catch (err) {
+            msg.textContent = 'Network error';
+            msg.className = 'error';
+        }
+    };
+
+    // Load Registrations
+    async function loadRegistrations() {
+        try {
+            const res = await fetch('backend/get_registrations.php');
+            const regs = await res.json();
+            const table = document.getElementById('registrations-table');
+            if (regs.length === 0) {
+                table.innerHTML = '<p>No registrations yet.</p>';
+                return;
+            }
+
+            let html = `<table>
+                <tr><th>Name</th><th>Email</th><th>Event ID</th></tr>`;
+            regs.forEach(r => {
+                html += `<tr><td>${r.name}</td><td>${r.email}</td><td>${r.event_id}</td></tr>`;
+            });
+            html += `</table>`;
+            table.innerHTML = html;
+        } catch (e) {
+            document.getElementById('registrations-table').innerHTML = '<p>Error loading data.</p>';
+        }
+    }
+
+    loadRegistrations();
+</script>
+</body>
+</html>

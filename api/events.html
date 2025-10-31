@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minerva Events</title>
+
+    <!-- Google Fonts: Inter (clean, modern) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <!-- Your new clean theme -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="main-bg"></div>
+
+<header>
+    <div class="container">
+        <div class="nav-header">
+            <div class="header-left">
+                <a href="#" class="brand">
+                    <img src="logo.png" class="logo" alt="Minerva Events Logo">
+                    <h1>Minerva Events</h1>
+                </a>
+            </div>
+
+            <nav class="header-right" aria-label="Main navigation">
+                <ul class="nav-actions">
+                    <li><button id="register-btn" class="nav-btn nav-primary" type="button">Register</button></li>
+                    <li><button id="admin-btn" class="nav-btn nav-secondary" type="button">Admin</button></li>
+                    <li><button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">🌓</button></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+        <!-- Toggle Buttons -->
+        <section class="toggle-section">
+            <button id="upcoming-btn" class="toggle-btn active">
+                Upcoming (<span id="upcoming-count">0</span>)
+            </button>
+            <button id="past-btn" class="toggle-btn">
+                Past (<span id="past-count">0</span>)
+            </button>
+        </section>
+
+        <!-- Events Grid -->
+        <section id="events-container" class="events-grid"></section>
+
+    </div>
+</main>
+
+<!-- Registration Modal -->
+<div id="register-modal" class="modal" style="display:none;">
+    <div class="container register-container">
+        <div class="heading">Register for Event</div>
+        <form id="registration-form" class="form">
+            <input required class="input" type="text" name="name" id="name" placeholder="Your Name">
+            <input required class="input" type="email" name="email" id="email" placeholder="E-mail">
+            <select required class="input" name="event" id="event">
+                <option value="">Select Event</option>
+            </select>
+            <button type="submit" class="login-button">Register Now</button>
+            <p id="form-message"></p>
+        </form>
+        <span class="close">×</span>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <p>© 2025 Minerva Forums – All Rights Reserved</p>
+    </div>
+</footer>
+
+<!-- ADMIN MODAL (hidden by default) -->
+<div id="admin-modal" class="modal" style="display:none;">
+    <div class="admin-container">
+        <div class="admin-header">
+            <h2>Admin Panel</h2>
+            <span class="close">×</span>
+        </div>
+
+        <!-- Add Event -->
+        <div class="admin-section add-event-section">
+            <form id="add-event-form" class="admin-form">
+                <div class="form-grid">
+                    <input type="text" placeholder="Title" id="admin-title" required class="admin-input">
+                    <input type="date" id="admin-date" required class="admin-input">
+                    <input type="text" placeholder="Location" id="admin-location" required class="admin-input">
+                    <textarea placeholder="Description" id="admin-description" required class="admin-input" rows="2"></textarea>
+                    <button type="submit" class="admin-button">Add Event</button>
+                </div>
+                <div id="admin-msg"></div>
+            </form>
+        </div>
+
+        <!-- Registrations Table -->
+        <div class="admin-section">
+            <div class="section-header">
+                <i data-feather="users"></i>
+                <h3>Event Registrations</h3>
+            </div>
+            <div class="table-container">
+                <div id="admin-table"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="scripts.js"></script>
+</body>
+</html>
